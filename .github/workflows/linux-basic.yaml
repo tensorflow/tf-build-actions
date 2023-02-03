@@ -1,0 +1,56 @@
+# Copyright 2023 The TensorFlow Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ==============================================================================
+
+# This is just testing a few build related things for tensorflow, it is not currently in a stable
+# or usable state.  Please do not use
+
+name: linux-tests
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+concurrency:
+  # A PR number if a pull request and otherwise the commit hash. This cancels
+  # queued and in-progress runs for the same PR (presubmit) or commit
+  # (postsubmit).
+  group: ${{ github.event.number || github.sha }}
+  cancel-in-progress: true
+
+# Jobs are organized into groups and topologically sorted by dependencies
+jobs:
+  build_linux_cpu:
+    runs-on: [self-hosted, linux, cpu, arc1]
+    container:
+      image: tensorflow/build:latest-python3.9 # TODO: Lock to specific GCR version, have the action that builds these update this
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+    - name: build cpu
+      run: |
+        bazel --bazelrc=/usertools/cpu.bazelrc test --config=rbe --config=pycpp
+  build_linux_gpu:
+    runs-on: [self-hosted, linux, gpu, arc1]
+    container:
+      image: tensorflow/build:latest-python3.9 # Lock to specific GCR version, have the action that builds these update this
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+    - name: build gpu
+      run: |
+        bazel --bazelrc=/usertools/gpu.bazelrc test --config=rbe --config=pycpp
+      
+      
