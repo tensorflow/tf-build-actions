@@ -16,7 +16,7 @@
 # This is just testing a few build related things for tensorflow, it is not currently in a stable
 # or usable state.  Please do not use
 
-name: linux-tests
+name: linux-chained
 on:
   pull_request:
     types: [ labeled ]
@@ -33,7 +33,7 @@ concurrency:
 
 # Jobs are organized into groups and topologically sorted by dependencies
 jobs:
-  if: ${{ github.event.label.name == 'basic-linux' }}
+  if: ${{ github.event.label.name == 'chain-linux' }}
   build_linux_cpu:
     runs-on: [self-hosted, linux, cpu, arc1]
     container:
@@ -41,18 +41,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
-    - name: build cpu
+    - name: build pip package
       run: |
-        bazel --bazelrc=/usertools/cpu.bazelrc test --config=rbe --config=pycpp
-  build_linux_gpu:
-    runs-on: [self-hosted, linux, gpu, arc1]
-    container:
-      image: tensorflow/build:latest-python3.9 # Lock to specific GCR version, have the action that builds these update this
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
-    - name: build gpu
-      run: |
-        bazel --bazelrc=/usertools/gpu.bazelrc test --config=rbe --config=pycpp
-      
-      
+        bazel --bazelrc=/usertools/gpu.bazelrc build --config=sigbuild_remote_cache tensorflow/tools/pip_package:build_pip_package
+        ./bazel-bin/tensorflow/tools/pip_package/build_pip_package /tf/pkg --cpu --nightly_flag
+        /usertools/rename_and_verify_wheels.sh
+        ls -la /tf/pkg
