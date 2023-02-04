@@ -19,7 +19,6 @@
 name: linux-chained
 on:
   pull_request:
-    types: [ labeled ]
   # push:
   #   branches:
   #     - master
@@ -33,7 +32,6 @@ concurrency:
 
 # Jobs are organized into groups and topologically sorted by dependencies
 jobs:
-  if: ${{ github.event.label.name == 'chain-linux' }}
   build_linux_cpu:
     runs-on: [self-hosted, linux, cpu, arc1]
     container:
