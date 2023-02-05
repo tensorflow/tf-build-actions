@@ -41,7 +41,7 @@ jobs:
       uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
     - name: build pip package
       run: |
-        mkdir /tf/pkg
+        mkdir -p /tf/pkg
         bazel --bazelrc=/usertools/gpu.bazelrc build tensorflow/tools/pip_package:build_pip_package
         ls -la /tf/pkg
         ./bazel-bin/tensorflow/tools/pip_package/build_pip_package /tf/pkg --gpu --nightly_flag
