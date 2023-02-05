@@ -41,7 +41,10 @@ jobs:
       uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
     - name: build pip package
       run: |
-        bazel --bazelrc=/usertools/gpu.bazelrc build --config=sigbuild_remote_cache tensorflow/tools/pip_package:build_pip_package
-        ./bazel-bin/tensorflow/tools/pip_package/build_pip_package /tf/pkg --cpu --nightly_flag
+        mkdir /tf/pkg
+        bazel --bazelrc=/usertools/gpu.bazelrc build tensorflow/tools/pip_package:build_pip_package
+        ls -la /tf/pkg
+        ./bazel-bin/tensorflow/tools/pip_package/build_pip_package /tf/pkg --gpu --nightly_flag
+        ls -la /tf/pkg
         /usertools/rename_and_verify_wheels.sh
         ls -la /tf/pkg
