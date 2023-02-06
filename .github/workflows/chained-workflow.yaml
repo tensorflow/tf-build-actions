@@ -56,5 +56,49 @@ jobs:
         echo "Run id $RUN_ID"
         echo "Run attempt $RUN_ATTEMPT"
         gsutil cp -r /tf/pkg gs://artifact-testing-tf/linux_chain/3.9/${RUN_ID}/${RUN_ATTEMPT}
-
-
+  test_linux_cpu:
+    runs-on: [self-hosted, linux, cpu, arc1]
+    needs: build_linux_cpu
+    container:
+      image: mhudgins/sig-build-3.9-with-gsutil # TODO: Lock to specific GCR version, have the action that builds these update this
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+      env:
+        RUN_ID: ${{ github.run_id }}
+        RUN_ATTEMPT: ${{ github.run_number }}
+      run: |
+        mkdir -p /tf/pkg
+        gsutil cp -r gs://artifact-testing-tf/linux_chain/3.9/${RUN_ID}/${RUN_ATTEMPT} /tf/pkg
+        ls -la /tf/pkg
+        exit 0
+        /usertools/setup_venv_test.sh bazel_pip "/tf/pkg/*.whl"
+        bazel --bazelrc=/usertools/cpu.bazelrc test --config=pip
+        bazel --bazelrc=/usertools/cpu.bazelrc test --config=nonpip
+  test_linux_gpu:
+    runs-on: [self-hosted, linux, gpu, arc1]
+    needs: build_linux_cpu
+    container:
+      image: mhudgins/sig-build-3.9-with-gsutil # TODO: Lock to specific GCR version, have the action that builds these update this
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+      env:
+        RUN_ID: ${{ github.run_id }}
+        RUN_ATTEMPT: ${{ github.run_number }}
+      run: |
+        mkdir -p /tf/pkg
+        gsutil cp -r gs://artifact-testing-tf/linux_chain/3.9/${RUN_ID}/${RUN_ATTEMPT} /tf/pkg
+        ls -la /tf/pkg
+        exit 0
+        /usertools/setup_venv_test.sh bazel_pip "/tf/pkg/*.whl"
+        bazel --bazelrc=/usertools/gpu.bazelrc test --config=pip
+        bazel --bazelrc=/usertools/gpu.bazelrc test --config=nonpip
+  final_chain:
+    needs: [test_linux_cpu, test_linux_gpu]
+    container:
+      image: mhudgins/sig-build-3.9-with-gsutil # TODO: Lock to specific GCR version, have the action that builds these update this
+    steps:
+    - name: Say hi
+      run: |
+        echo "The other two jobs are done"
