@@ -44,7 +44,7 @@ jobs:
         mkdir -p /tf/pkg
         bazel --bazelrc=/usertools/gpu.bazelrc build tensorflow/tools/pip_package:build_pip_package
         ls -la /tf/pkg
-        ./bazel-bin/tensorflow/tools/pip_package/build_pip_package /tf/pkg --gpu --nightly_flag
+        ./bazel-bin/tensorflow/tools/pip_package/build_pip_package /tf/pkg --nightly_flag
         ls -la /tf/pkg
         /usertools/rename_and_verify_wheels.sh
         ls -la /tf/pkg
