@@ -45,16 +45,10 @@ jobs:
         RUN_ATTEMPT: ${{ github.run_number }}
       run: |
         mkdir -p /tf/pkg
-        touch /tf/pkg/f1.txt
-        touch /tf/pkg/f2.txt
-        # bazel --bazelrc=/usertools/gpu.bazelrc build tensorflow/tools/pip_package:build_pip_package
-        # ls -la /tf/pkg
-        # ./bazel-bin/tensorflow/tools/pip_package/build_pip_package /tf/pkg --nightly_flag
-        # ls -la /tf/pkg
-        # /usertools/rename_and_verify_wheels.sh
-        # ls -la /tf/pkg
-        echo "Run id $RUN_ID"
-        echo "Run attempt $RUN_ATTEMPT"
+        bazel --bazelrc=/usertools/gpu.bazelrc build tensorflow/tools/pip_package:build_pip_package
+        ./bazel-bin/tensorflow/tools/pip_package/build_pip_package /tf/pkg --nightly_flag
+        /usertools/rename_and_verify_wheels.sh
+        ls -la /tf/pkg
         gsutil cp -r /tf/pkg gs://artifact-testing-tf/linux_chain/3.9/${RUN_ID}/${RUN_ATTEMPT}
   test_linux_cpu:
     runs-on: [self-hosted, linux, cpu, arc1]
@@ -72,7 +66,6 @@ jobs:
         mkdir -p /tf/pkg
         gsutil cp -r gs://artifact-testing-tf/linux_chain/3.9/${RUN_ID}/${RUN_ATTEMPT}/* /tf/pkg
         ls -la /tf/pkg
-        exit 0
         /usertools/setup_venv_test.sh bazel_pip "/tf/pkg/*.whl"
         bazel --bazelrc=/usertools/cpu.bazelrc test --config=pip
         bazel --bazelrc=/usertools/cpu.bazelrc test --config=nonpip
@@ -92,7 +85,6 @@ jobs:
         mkdir -p /tf/pkg
         gsutil cp -r gs://artifact-testing-tf/linux_chain/3.9/${RUN_ID}/${RUN_ATTEMPT}/* /tf/pkg
         ls -la /tf/pkg
-        exit 0
         /usertools/setup_venv_test.sh bazel_pip "/tf/pkg/*.whl"
         bazel --bazelrc=/usertools/gpu.bazelrc test --config=pip
         bazel --bazelrc=/usertools/gpu.bazelrc test --config=nonpip
