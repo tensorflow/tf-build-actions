@@ -39,10 +39,10 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+    - name: build pip package
       env:
         RUN_ID: ${{ github.run_id }}
         RUN_ATTEMPT: ${{ github.run_number }}
-    - name: build pip package
       run: |
         mkdir -p /tf/pkg
         touch /tf/pkg/f1.txt
@@ -53,6 +53,8 @@ jobs:
         # ls -la /tf/pkg
         # /usertools/rename_and_verify_wheels.sh
         # ls -la /tf/pkg
-        gsutil cp -r /tf/pkg gs://artifact-testing-tf/linux_chain/3.9/$RUN_ID/$RUN_ATTEMPT
+        echo "Run id $RUN_ID"
+        echo "Run attempt $RUN_ATTEMPT"
+        gsutil cp -r /tf/pkg gs://artifact-testing-tf/linux_chain/3.9/${RUN_ID}/${RUN_ATTEMPT}
 
 
