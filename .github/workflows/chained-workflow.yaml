@@ -98,6 +98,7 @@ jobs:
         bazel --bazelrc=/usertools/gpu.bazelrc test --config=nonpip
   final_chain:
     needs: [test_linux_cpu, test_linux_gpu]
+    runs-on: ubuntu-latest
     container:
       image: mhudgins/sig-build-3.9-with-gsutil # TODO: Lock to specific GCR version, have the action that builds these update this
     steps:
