@@ -35,16 +35,24 @@ jobs:
   build_linux_cpu:
     runs-on: [self-hosted, linux, cpu, arc1]
     container:
-      image: tensorflow/build:latest-python3.9 # TODO: Lock to specific GCR version, have the action that builds these update this
+      image: mhudgins/sig-build-3.9-with-gsutil # TODO: Lock to specific GCR version, have the action that builds these update this
     steps:
     - name: Checkout code
       uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+      env:
+        RUN_ID: ${{ github.run_id }}
+        RUN_ATTEMPT: ${{ github.run_number }}
     - name: build pip package
       run: |
         mkdir -p /tf/pkg
-        bazel --bazelrc=/usertools/gpu.bazelrc build tensorflow/tools/pip_package:build_pip_package
-        ls -la /tf/pkg
-        ./bazel-bin/tensorflow/tools/pip_package/build_pip_package /tf/pkg --nightly_flag
-        ls -la /tf/pkg
-        /usertools/rename_and_verify_wheels.sh
-        ls -la /tf/pkg
+        touch /tf/pkg/f1.txt
+        touch /tf/pkg/f2.txt
+        # bazel --bazelrc=/usertools/gpu.bazelrc build tensorflow/tools/pip_package:build_pip_package
+        # ls -la /tf/pkg
+        # ./bazel-bin/tensorflow/tools/pip_package/build_pip_package /tf/pkg --nightly_flag
+        # ls -la /tf/pkg
+        # /usertools/rename_and_verify_wheels.sh
+        # ls -la /tf/pkg
+        gsutil cp -r /tf/pkg gs://artifact-testing-tf/linux_chain/3.9/$RUN_ID/$RUN_ATTEMPT
+
+
