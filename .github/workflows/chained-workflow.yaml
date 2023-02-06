@@ -70,7 +70,7 @@ jobs:
         RUN_ATTEMPT: ${{ github.run_number }}
       run: |
         mkdir -p /tf/pkg
-        gsutil cp -r gs://artifact-testing-tf/linux_chain/3.9/${RUN_ID}/${RUN_ATTEMPT} /tf/pkg
+        gsutil cp -r gs://artifact-testing-tf/linux_chain/3.9/${RUN_ID}/${RUN_ATTEMPT}/* /tf/pkg
         ls -la /tf/pkg
         exit 0
         /usertools/setup_venv_test.sh bazel_pip "/tf/pkg/*.whl"
@@ -90,7 +90,7 @@ jobs:
         RUN_ATTEMPT: ${{ github.run_number }}
       run: |
         mkdir -p /tf/pkg
-        gsutil cp -r gs://artifact-testing-tf/linux_chain/3.9/${RUN_ID}/${RUN_ATTEMPT} /tf/pkg
+        gsutil cp -r gs://artifact-testing-tf/linux_chain/3.9/${RUN_ID}/${RUN_ATTEMPT}/* /tf/pkg
         ls -la /tf/pkg
         exit 0
         /usertools/setup_venv_test.sh bazel_pip "/tf/pkg/*.whl"
