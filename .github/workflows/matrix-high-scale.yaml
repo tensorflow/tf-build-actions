@@ -18,13 +18,19 @@ name: Test workflow
 on:
     pull_request:
 jobs:
-    test:
-        strategy:
-            matrix:
-                first_scale_var: [1, 2, 3,4,5]
-                second_scale_var: [a,b,c,d,e]
+    # test many:
+    #     strategy:
+    #         matrix:
+    #             first_scale_var: [1, 2, 3,4,5]
+    #             second_scale_var: [a,b,c,d,e]
+    #     runs-on: linux-cpu
+    #     steps:
+    #     - name: Hello world
+    #       run: |
+    #         echo "Hello world ${{ matrix.first_scale_var }} ${{ matrix.second_scale_var }}"
+    test one:
         runs-on: linux-cpu
         steps:
         - name: Hello world
           run: |
-            echo "Hello world ${{ matrix.first_scale_var }} ${{ matrix.second_scale_var }}"
+            echo "Hello world simple"
