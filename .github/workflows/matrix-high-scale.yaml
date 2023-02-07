@@ -30,6 +30,8 @@ jobs:
     #         echo "Hello world ${{ matrix.first_scale_var }} ${{ matrix.second_scale_var }}"
     testOne:
         runs-on: linux-cpu
+        container:
+            image: mhudgins/sig-build-3.9-with-gsutil # TODO: Lock to specific GCR version, have the action that builds these update this
         steps:
         - name: Hello world
           run: |
