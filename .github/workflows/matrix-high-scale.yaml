@@ -32,12 +32,14 @@ jobs:
         runs-on: linux-cpu
         strategy:
             matrix:
-                first_scale_var: [1, 2]
-                second_scale_var: [a, b]
+                python_version: [3.8, 3.9, 3.10, 3.11]
         container:
-            image: mhudgins/sig-build-3.9-with-gsutil # TODO: Lock to specific GCR version, have the action that builds these update this
+            image:tensorflow/build:latest-python${{matrix.python_version}} # TODO: Lock to specific GCR version, have the action that builds these update this
         steps:
-        - name: Hello world
+        - name: Checkout code
+          uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+        - name: Test CPU
           run: |
-            echo "Hello world ${{ matrix.first_scale_var }} ${{ matrix.second_scale_var }}"
+            bazel --bazelrc=/usertools/cpu.bazelrc test --config=pycpp
+
 
