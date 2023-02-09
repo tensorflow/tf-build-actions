@@ -40,6 +40,6 @@ jobs:
           uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
         - name: Test CPU
           run: |
-            bazel --bazelrc=/usertools/cpu.bazelrc test --config=pycpp
+            bazel --bazelrc=/usertools/cpu.bazelrc test --config=rbe --config=pycpp
 
 
