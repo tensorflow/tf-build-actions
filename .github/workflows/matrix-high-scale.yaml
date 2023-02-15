@@ -29,21 +29,8 @@ jobs:
     #     - name: Hello world
     #       run: |
     #         echo "Hello world ${{ matrix.first_scale_var }} ${{ matrix.second_scale_var }}"
-    # CPUTest:
-    #     runs-on: linux-cpu
-    #     strategy:
-    #         matrix:
-    #             python_version: ["3.8", "3.9", "3.10", "3.11"]
-    #     container:
-    #         image: tensorflow/build:latest-python${{matrix.python_version}} # TODO: Lock to specific GCR version, have the action that builds these update this
-    #     steps:
-    #     - name: Checkout code
-    #       uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
-    #     - name: Test CPU
-    #       run: |
-    #         bazel --bazelrc=/usertools/cpu.bazelrc test --config=rbe --config=pycpp
-    GPUTest:
-        runs-on: linux-gpu
+    CPUTest:
+        runs-on: linux-cpu
         strategy:
             matrix:
                 python_version: ["3.9"]
@@ -52,8 +39,21 @@ jobs:
         steps:
         - name: Checkout code
           uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
-        - name: Test GPU
+        - name: Test CPU
           run: |
-            bazel --bazelrc=/usertools/gpu.bazelrc test --config=rbe --config=pycpp
+            bazel --bazelrc=/usertools/cpu.bazelrc test --config=rbe --config=pycpp
+    # GPUTest:
+    #     runs-on: linux-gpu
+    #     strategy:
+    #         matrix:
+    #             python_version: ["3.9"]
+    #     container:
+    #         image: tensorflow/build:latest-python${{matrix.python_version}} # TODO: Lock to specific GCR version, have the action that builds these update this
+    #     steps:
+    #     - name: Checkout code
+    #       uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+    #     - name: Test GPU
+    #       run: |
+    #         bazel --bazelrc=/usertools/gpu.bazelrc test --config=rbe --config=pycpp
 
 
