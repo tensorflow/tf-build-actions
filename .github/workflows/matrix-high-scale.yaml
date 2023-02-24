@@ -19,29 +19,29 @@ on:
     pull_request:
     # workflow_dispatch:
 jobs:
-    # testMany:
-    #     strategy:
-    #         matrix:
-    #             first_scale_var: [1, 2, 3,4,5]
-    #             second_scale_var: [a,b,c,d,e]
-    #     runs-on: linux-cpu
-    #     steps:
-    #     - name: Hello world
-    #       run: |
-    #         echo "Hello world ${{ matrix.first_scale_var }} ${{ matrix.second_scale_var }}"
-    CPUTest:
-        runs-on: linux-cpu
+    TestMany:
         strategy:
             matrix:
-                python_version: ["3.9"]
-        container:
-            image: tensorflow/build:latest-python${{matrix.python_version}} # TODO: Lock to specific GCR version, have the action that builds these update this
+                first_scale_var: [1, 2, 3,4,5]
+                second_scale_var: [a,b,c,d,e]
+        runs-on: linux-cpu
         steps:
-        - name: Checkout code
-          uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
-        - name: Test CPU
+        - name: Hello world
           run: |
-            bazel --bazelrc=/usertools/cpu.bazelrc test --config=rbe --config=pycpp
+            echo "Hello world ${{ matrix.first_scale_var }} ${{ matrix.second_scale_var }}"
+    # CPUTest:
+    #     runs-on: linux-cpu
+    #     strategy:
+    #         matrix:
+    #             python_version: ["3.9"]
+    #     container:
+    #         image: tensorflow/build:latest-python${{matrix.python_version}} # TODO: Lock to specific GCR version, have the action that builds these update this
+    #     steps:
+    #     - name: Checkout code
+    #       uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+    #     - name: Test CPU
+    #       run: |
+    #         bazel --bazelrc=/usertools/cpu.bazelrc test --config=rbe --config=pycpp
     # GPUTest:
     #     runs-on: linux-gpu
     #     strategy:
