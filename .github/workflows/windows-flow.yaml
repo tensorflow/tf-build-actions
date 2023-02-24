@@ -1,0 +1,10 @@
+name: Test workflow
+on:
+  pull_request:
+jobs:
+  test:
+    runs-on: window-sh
+    steps:
+    - name: Hello world
+      run: |
+        echo "Hello world"
