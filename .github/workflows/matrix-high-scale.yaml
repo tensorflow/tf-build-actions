@@ -22,8 +22,10 @@ jobs:
     TestMany:
         strategy:
             matrix:
-                first_scale_var: [1, 2, 3,4,5]
-                second_scale_var: [a,b,c,d,e]
+                first_scale_var: [1, 2, 3]
+                second_scale_var: [a,b,c]
+        container:
+            image: tensorflow/build:latest-python3.9
         runs-on: linux-cpu
         steps:
         - name: Hello world
